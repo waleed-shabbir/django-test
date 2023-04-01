@@ -1,0 +1,56 @@
+Boarding Pass Sorter
+
+This application is based on Django's REST framework to return a list of sorted boarding passes given a list of unsorted boarding passes.
+
+There is only 1 unauthenticated URL which performs this operation.
+
+To setup the project
+- Clone this repo locally
+- Project root is test
+- Run source env/bin/activate
+- The above command will start the virtual environment to run this project
+- Run python manage.py runserver to start the server at 127.0.0.1:8000. The repo has the SQL lite file so we do not have to worry about migrations.
+
+To use the API setup the client with the help of the following API contract
+
+Method: POST
+URL: /boarding_system/boarding_pass/sort
+URL params: None
+Body: [
+{"source": "Gerona Airport","destination": "Stockholm", "mode": "Airport Bus","journey_details": "Gate 45B, seat 3A.Baggage drop at ticket counter 344.","mode_details": "SK 455"},
+{"source": "Madrid","destination": "Barcelona", "mode": "train","journey_details": "45B","mode_details": "78A"},
+{"source": "Barcelona","destination": "Gerona Airport", "mode": "Airport Buse","journey_details": "","mode_details": ""},
+{"source": "Stockholm","destination": "Newyork JFK", "mode": "plane","journey_details": "Gate 22, Seat 7b","mode_details": "SK22"}
+]
+Headers: Content-Type: application/json
+Success Response Code: 200
+Response Body:
+message: "Success"
+code: 200
+data: [
+{"source":"Madrid","journey_details":"45B","destination":"Barcelona","mode":"train","mode_details":"78A"},
+{"source":"Barcelona","journey_details":"","destination":"Gerona Airport","mode":"Airport Buse","mode_details":""},
+{"source":"Gerona Airport","journey_details":"Gate 45B, seat 3A.Baggage drop at ticket counter 344.","destination":"Stockholm","mode":"Airport Bus","mode_details":"SK 455"},
+{"source":"Stockholm","journey_details":"Gate 22, Seat 7b","destination":"Newyork JFK","mode":"plane","mode_details":"SK22"}
+]
+Error Response Code: 403
+Response Body:
+message: "Input data is invalid"/"Input cannot be empty"
+code: 403
+data: []
+
+You can use cURL locally as well. Following is an example request
+curl -H "Content-Type: application/json" -X POST http://127.0.0.1:8000/boarding_system/boarding_pass/sort -d '[{"source": "Gerona Airport","destination": "Stockholm", "mode": "Airport Bus","journey_details": "Gate 45B, seat 3A.Baggage drop at ticket counter 344.","mode_details": "SK 455"},{"source": "Madrid","destination": "Barcelona", "mode": "train","journey_details": "45B","mode_details": "78A"},{"source": "Barcelona","destination": "Gerona Airport", "mode": "Airport Buse","journey_details": "","mode_details": ""},{"source": "Stockholm","destination": "Newyork JFK", "mode": "plane","journey_details": "Gate 22, Seat 7b","mode_details": "SK22"}]'
+
+This application has 4 tests
+- valid unsorted input yields sorted list
+- valid sorted input yields sorted list
+- empty input throws client error
+- invalid input throws client error
+
+To run test use: python manage.py test
+
+Assumptions:
+- The list does not have circular dependency (the last does not point to the start)
+- Input to the API cannot be empty (this is handled in code but also marked as assumption)
+- Not expecting 1 boarding pass in payload (this is NOT handled in the code)
