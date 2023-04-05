@@ -1,5 +1,5 @@
 """
-WSGI config for talpods project.
+WSGI config for djangotest project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "talpods.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "djangotest.settings")
 
 application = get_wsgi_application()
